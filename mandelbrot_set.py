@@ -34,8 +34,9 @@ def colorize_sinusoidal(x, max_iter):
     blue = int(np.cos(x * np.pi / (max_iter * 2)) * 256)
     return red, green, blue
 
+
 @jit
-def colorize(x, max_iter):
+def colorize_mono(x, max_iter):
     if x == max_iter:
         return 0, 0, 0
 
@@ -43,7 +44,6 @@ def colorize(x, max_iter):
     blue = int((x / max_iter) ** 2 * 256)
     green = int((x / max_iter) ** 2 * 256)
     return red, green, blue
-
 
 
 @jit
@@ -87,15 +87,18 @@ def generate_image(resolution=(1920, 1080), zoom=1, focus=0+0j, iter=256):
     # -2.0, 1.0, -1.25, 1.25
     for x in range(resolution[1]):
         for y in range(resolution[0]):
-            image.putpixel((y, x), colorize_sinusoidal(image_array[x][y], 64))
+            image.putpixel((y, x), colorize_sinusoidal(image_array[x][y], iter))
 
     return image
 
 
-if __name__ == '__main__':
+def main():
+    curtime = time.time()
     # -0.761574 + -0.0847596j
-    curtime = time.perf_counter()
-    image = generate_image((1920 * 2, 1080 * 2), 100000, -0.761574 + -0.0847596j, 512)
-    image.show()
-    print(time.perf_counter() - curtime)
+    image = generate_image((1920 * 2, 1080 * 2), 100000, -0.761574 + -0.0847596j, 1024)
+    image.save("temp.bmp")
+    print(time.time() - curtime)
 
+
+if __name__ == '__main__':
+    main()
