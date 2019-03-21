@@ -1,0 +1,5 @@
+# Ignores generated .png files
+mandelbrot_demo/*.png
+
+venv/
+.idea/

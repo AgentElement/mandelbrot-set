@@ -5,6 +5,7 @@
 #
 # Copyright (C) AgentElement
 #
+# MIT Licence
 ################################################################################
 
 
@@ -26,18 +27,18 @@ import os
 SAVE_CTR = 0
 
 
-# Saves the image in the mandelbrot directory as mandelbrot_set_###.png
+# Saves the image in the mandelbrot_demo directory as mandelbrot_set_###.png
 def save_img(image):
     global SAVE_CTR
-    image.save(r"mandelbrot\mandelbrot_set_{}.png".format(str(SAVE_CTR).zfill(3)))
+    image.save(r"mandelbrot_demo\mandelbrot_set_{}.png".format(str(SAVE_CTR).zfill(3)))
     SAVE_CTR += 1
 
 
 # Computes if a complex number z is in the set by returning the number of
 # iterations z takes to diverge. max_iter is the maximum number of iterations
 # allowed until z is declared to be in the set. Ideally this would be infinite,
-# but, y'know... physics. (If the number of iterations = max_iter, z is in the
-# set).
+# but memory is obviously finite. (If the number of iterations = max_iter, z is
+# in the set).
 @jit
 def compute_mandelbrot(z: complex, max_iter):
     c = z
@@ -94,6 +95,7 @@ def generate_set(min_x, max_x, min_y, max_y, arr, iterations):
     x_pixel = (max_x - min_x) / height
     y_pixel = (max_y - min_y) / width
 
+    # computes the value for the mandelbrot set at each pixel.
     for x in range(height):
         re = min_x + x * x_pixel
         for y in range(width):
@@ -106,7 +108,7 @@ def generate_set(min_x, max_x, min_y, max_y, arr, iterations):
 
 # Takes a resolution and generates the four bounding numbers used by
 # generate_set(). The image will be focused around the focus parameter, and will
-# be zoomed in by a factor of zoom/12
+# be zoomed in by a factor of zoom/12. By default, this generates a 4K image.
 @jit
 def range_from_resolution(resolution=(3840, 2160), zoom=1, focus=0 + 0j):
     max_x_pixel, max_y_pixel = resolution[0], resolution[1]
@@ -139,7 +141,7 @@ def generate_image(resolution=(1920, 1080), zoom=1, focus=0+0j, iterations=256):
     # -2.0, 1.0, -1.25, 1.25
     for x in range(resolution[1]):
         for y in range(resolution[0]):
-            # Switch  colorize_sinusoidal() for colorize_mono() for a
+            # Switch  colorize_sinusoidal() for colorize_mono()  here for a
             # monochromatic image.
             image.putpixel((y, x), colorize_sinusoidal(image_array[y][x], iterations))
 
@@ -153,10 +155,9 @@ def main():
     # -0.761574 + -0.0847596j
     # 100000
     focus = -0.761574 + -0.0847596j
-    for i in range(1, 250):
-        image = generate_image((1920, 1080), np.log2(1000000), focus, 1024)
-        # image.show()
-        save_img(image)
+    image = generate_image((1920, 1080), np.log2(100000) * 12, focus, 1024)
+    image.show()
+    save_img(image)
     # convert_to_video()
     print("Mandelbrot set zoom at {} generated in {} seconds".format(focus, time.time() - curr_time))
 
