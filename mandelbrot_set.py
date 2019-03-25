@@ -133,7 +133,7 @@ def range_from_resolution(resolution=(3840, 2160), zoom=1, focus=0 + 0j):
 # This is a wrapper function that generates the numpy array and turns it into a
 # colorized image.
 @jit
-def generate_image(resolution=(1920, 1080), zoom=1, focus=0+0j, iterations=256):
+def generate_image(resolution=(1920, 1080), zoom=1, focus=0 + 0j, iterations=256):
     image_array = np.empty(resolution, dtype=np.uint16)
     image = Image.new("RGB", resolution)
 
@@ -164,7 +164,7 @@ def main():
 
 def convert_to_video():
     pass
-    # os.
+    # ffmpeg -framerate 24 -i mandelbrot_set_%03d.png mandelbrot_zoom.mp4
 
 
 if __name__ == '__main__':
