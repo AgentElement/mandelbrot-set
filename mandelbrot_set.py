@@ -133,17 +133,21 @@ def range_from_resolution(resolution=(3840, 2160), zoom=1, focus=0 + 0j):
 # This is a wrapper function that generates the numpy array and turns it into a
 # colorized image.
 @jit
-def generate_image(resolution=(1920, 1080), zoom=1, focus=0 + 0j, iterations=256):
+def generate_image(resolution=(1920, 1080), zoom=1, focus=0 + 0j, iterations=256, colortype='sin'):
     image_array = np.empty(resolution, dtype=np.uint16)
     image = Image.new("RGB", resolution)
+
+    func = None
+    if colortype == 'sin':
+        func = colorize_sinusoidal
+    elif colortype == 'mono':
+        func = colorize_mono
 
     image_array = generate_set(*range_from_resolution(resolution, zoom, focus), image_array, iterations)
     # -2.0, 1.0, -1.25, 1.25
     for x in range(resolution[1]):
         for y in range(resolution[0]):
-            # Switch  colorize_sinusoidal() for colorize_mono()  here for a
-            # monochromatic image.
-            image.putpixel((y, x), colorize_sinusoidal(image_array[y][x], iterations))
+            image.putpixel((y, x), func(image_array[y][x], iterations))
 
     return image
 
@@ -155,7 +159,7 @@ def main():
     # -0.761574 + -0.0847596j
     # 100000
     focus = -0.761574 + -0.0847596j
-    image = generate_image((1920, 1080), np.log2(100000) * 12, focus, 1024)
+    image = generate_image((1920, 1080), np.log2(100000) * 12, focus, 1024, colortype='mono')
     image.show()
     save_img(image)
     # convert_to_video()
