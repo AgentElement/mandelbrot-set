@@ -1,5 +1,6 @@
 # Ignores generated .png files
 mandelbrot_demo/*.png
+image_list/
 
 __pycache__/
 venv/

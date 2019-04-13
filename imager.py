@@ -17,16 +17,20 @@ class Imager:
     def __str__(self):
         return repr(self)
 
-    # Returns a 3-tuple (red, green, blue) depending on the fraction x/max_iter,
-    # where x is the number of iterations returned by compute_mandelbrot.
-    #
-    # The channels vary like this:
-    # Blue decreases as x approaches max_iter. Red increases. Green peaks when
-    # x/max_iter = 0.5 then decreases. All three channels follow a sinusoidal
-    # curve.
     @staticmethod
     @jit
     def colorize_sinusoidal(x, max_iter):
+
+        """
+        Returns a 3-tuple (red, green, blue) depending on the fraction x/max_iter,
+        where x is the number of iterations returned by compute_mandelbrot.
+
+        The channels vary like this:
+        Blue decreases as x approaches max_iter. Red increases. Green peaks when
+        x/max_iter = 0.5 then decreases. All three channels follow a sinusoidal
+        curve.
+
+        """
         if x == max_iter:
             return 0, 0, 0
 
@@ -35,35 +39,45 @@ class Imager:
         blue = int(np.cos(x * np.pi / (max_iter * 2)) * 256)
         return red, green, blue
 
-    # Same as colorize_sinusoidal(), but monochromatic. Is squared as humans notice
-    # differences between darker colors more obviously.
     @staticmethod
     @jit
     def colorize_mono(x, max_iter):
+
+        """
+        Same as colorize_sinusoidal(), but monochromatic. Is squared as humans notice
+        differences between darker colors more obviously.
+        """
+
         if x == max_iter:
             return 0, 0, 0
 
-        red = int((x / max_iter) ** 2 * 256)
-        blue = int((x / max_iter) ** 2 * 256)
-        green = int((x / max_iter) ** 2 * 256)
-        return red, green, blue
+        color = int((x / max_iter) ** 2 * 256)
+        return color, color, color
 
-    # This is a wrapper function that generates the numpy array and turns it
-    # into a colorized image. Returns the image as a byte array.
     @jit
     def generate_image(self, zoom, color_type='sin'):
+
+        """
+        This is a wrapper function that generates the numpy array and turns it
+        into a colorized image. Returns the image as a byte array.
+        """
+
         resolution = self.__generator.resolution
         iterations = self.__generator.iterations
         image = Image.new("RGB", resolution)
         self.__generator.generate(zoom)
         image_array = self.__generator.arr
 
-        color_function = None
+        _color_function_dict = {
+            'sin': Imager.colorize_sinusoidal,
+            'mono': Imager.colorize_mono,
+            'linear_mono': None,
+            'linear_sin': None
+        }
 
-        if color_type == 'sin':
-            color_function = self.colorize_sinusoidal
-        elif color_type == 'mono':
-            color_function = self.colorize_mono
+        color_function = _color_function_dict[color_type]
+        if color_function is None:
+            raise NotImplementedError
 
         # -2.0, 1.0, -1.25, 1.25
         for x in range(resolution[1]):
@@ -72,8 +86,11 @@ class Imager:
 
         return image
 
-    # Saves the image in the mandelbrot_demo directory as mandelbrot_set_###.png
     def save_image(self, image):
+
+        """
+        Saves the image in the mandelbrot_demo directory as mandelbrot_set_###.png
+        """
+
         image.save(r"mandelbrot_demo\mandelbrot_set_{}.png".format(str(self.__save_ctr).zfill(3)))
         self.__save_ctr += 1
-
