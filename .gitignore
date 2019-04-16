@@ -5,3 +5,4 @@ image_list/
 __pycache__/
 venv/
 .idea/
+test.py

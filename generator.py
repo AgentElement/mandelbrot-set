@@ -26,9 +26,9 @@ class Generator:
         """
         Computes if a complex number z is in the set by returning the number of
         iterations z takes to diverge. max_iter is the maximum number of
-        iterations allowed until z is declared to be in the set. Ideally this
-        would be infinite, but memory is obviously finite. (If the number of
-        iterations = max_iter, z is in the set).
+        iterations allowed until z is declared to be in the set. Ideally
+        max_iter would be infinity. (If the number of iterations = max_iter,
+        z is in the set).
         """
 
         c = z
