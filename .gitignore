@@ -4,5 +4,6 @@ image_list/
 
 __pycache__/
 venv/
+.vscode/
 .idea/
 test.py

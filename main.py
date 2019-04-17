@@ -1,15 +1,16 @@
 from generator import Generator
 from imager import Imager
-import numpy as np
-from PIL import Image
 import time
 
 
 def main():
-    gen = Generator(focus=-0.761574 + -0.0847596j, iterations=1024)
+    focus = -0.761574 + -0.0847596j
+    curr_time = time.time()
+    gen = Generator(focus=focus, iterations=1024)
     imgr = Imager(gen)
-    img = imgr.generate_image(200, color_type='sin')
+    img = imgr.generate_image(200, color_type='linear')
     img.show()
+    print("Mandelbrot set zoom at {} generated in {} seconds".format(focus, time.time() - curr_time))
 
 
 if __name__ == '__main__':

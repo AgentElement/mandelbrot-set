@@ -4,7 +4,7 @@ from numba import jit
 
 class Generator:
 
-    def __init__(self, resolution=(1920, 1080), focus=0 + 0j, framerate=24, speed=2, iterations=256):
+    def __init__(self, resolution=(3840, 2160), focus=0 + 0j, framerate=24, speed=2, iterations=256):
         self.resolution = resolution
         self.focus = focus
         self.speed = speed
@@ -24,11 +24,14 @@ class Generator:
     def compute_mandelbrot(z: complex, max_iter):
 
         """
-        Computes if a complex number z is in the set by returning the number of
-        iterations z takes to diverge. max_iter is the maximum number of
-        iterations allowed until z is declared to be in the set. Ideally
-        max_iter would be infinity. (If the number of iterations = max_iter,
-        z is in the set).
+        Computes if a complex number z is in the set, returning the number of
+        iterations required for divergence, up to max_iter.
+
+        :param z: Complex number to be tested for divergence.
+        :param max_iter: Maximum number of iterations before z is declared to
+        be in the set.
+        :return: Number of iterations for divergence (if divergence occurs),
+        else max_iter.
         """
 
         c = z
@@ -42,11 +45,19 @@ class Generator:
     def generate_set(self, min_x, max_x, min_y, max_y, iterations):
 
         """
-        Generates a mandelbrot set in a (x, y) numpy array with each element
-        carrying the number of iterations. The array is bounded by four numbers
+        Generates a mandelbrot set in self.arr with each element carrying the
+        number of iterations. The array is bounded by four numbers
         (min_x, max_x, min_y, max_y) each determining the maximum and minimum
         real/imaginary values that are computed. Each element in the array
         directly corresponds to one pixel.
+
+        :param min_x: Minimum x-value to be computed.
+        :param max_x: Maximum x-value to be computed.
+        :param min_y: Minimum y-value to be computed.
+        :param max_y: Maximum x-value to be computed.
+        :param iterations: number of iterations before the program determines
+        convergence
+        :return: None
         """
 
         # arr is a 2D np array containing the image.
@@ -63,8 +74,7 @@ class Generator:
             for y in range(width):
                 im = min_y + y * y_pixel
                 z = complex(re, im)
-                mandelbrot_item = self.compute_mandelbrot(z, iterations)
-                self.arr[x, y] = mandelbrot_item
+                self.arr[x, y] = self.compute_mandelbrot(z, iterations)
 
     @staticmethod
     @jit
@@ -75,6 +85,13 @@ class Generator:
         generate_set(). The image will be focused around the focus parameter, and
         will be zoomed in by a factor of zoom/speed. By default, this generates a 4K
         image.
+
+        :param resolution: Resolution of the image.
+        :param zoom: Factor by which the image must be exponentially zoomed in.
+        :param focus: Point around which the image is focused.
+        :param framerate: Framerate of the zoom.
+        :param speed: Speed at which the image doubles in size [/0.5 seconds].
+        :return: Four bounding numbers for generate_set().
         """
 
         max_x_pixel, max_y_pixel = resolution[0], resolution[1]
@@ -86,12 +103,16 @@ class Generator:
         """
         buffer_zone = 2 * (max_x_pixel - max_y_pixel) / max_y_pixel
 
+        if framerate == -1:
+            framerate, speed = 1, 1  # If static image, do nothing
+
         """
-        The zoom value is divided by @speed. This means that the image will
-        double in size every @speed frames. At 24 fps, the image will zoom in
-        by a factor of 4 every second by default.
+        The zoom value is multiplied by @speed and divided by @framerate. This 
+        means that the image will double in size every (framerate / speed) 
+        frames. At 24 fps, the image will zoom in by a factor of 4 every second
+        by default.
         """
-        scaled_zoom = zoom / (framerate / speed)
+        scaled_zoom = zoom * speed / framerate
 
         min_x = ((-2.0 - buffer_zone) / 2 ** scaled_zoom + focus.real)
         max_x = ((2.0 + buffer_zone) / 2 ** scaled_zoom + focus.real)

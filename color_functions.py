@@ -155,6 +155,8 @@ def colorize_mono_squared(x, max_iter):
 ################################################################################
 # COLOR SPECTRUM TESTING
 ################################################################################
+
+
 def generate_image(color_function=colorize_sinusoidal_squared, resolution=(1024, 64), scale_factor=1, **kwargs):
     image = Image.new('RGB', resolution)
     for x in range(resolution[0]):

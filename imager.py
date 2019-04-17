@@ -1,8 +1,5 @@
-import numpy as np
 from PIL import Image
-from numba import jit
 from generator import Generator
-import sys
 import color_functions
 
 
@@ -21,7 +18,6 @@ class Imager:
     def generate_image(self, zoom, color_type='sin', **kwargs):
 
         """
-
         This is a wrapper function that generates the numpy array and turns it
         into a colorized image. Returns the image as a byte array.
 
@@ -30,6 +26,7 @@ class Imager:
         :param kwargs: Passed to the color function
         :return: PIL image
         """
+
         resolution = self.__generator.resolution
         iterations = self.__generator.iterations
         image = Image.new("RGB", resolution)
