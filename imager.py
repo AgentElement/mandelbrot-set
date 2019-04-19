@@ -15,13 +15,12 @@ class Imager:
     def __str__(self):
         return repr(self)
 
-    def generate_image(self, zoom, color_type='sin', **kwargs):
+    def generate_image(self, color_type='sin', **kwargs):
 
         """
         This is a wrapper function that generates the numpy array and turns it
         into a colorized image. Returns the image as a byte array.
 
-        :param zoom: The factor by which the image zooms in
         :param color_type: Short string representations of a color function
         :param kwargs: Passed to the color function
         :return: PIL image
@@ -30,7 +29,7 @@ class Imager:
         resolution = self.__generator.resolution
         iterations = self.__generator.iterations
         image = Image.new("RGB", resolution)
-        self.__generator.generate(zoom)
+        self.__generator.generate()
         image_array = self.__generator.arr
 
         _color_function_dict = {
