@@ -2,6 +2,12 @@ from generator import JuliaGenerator, MandelbrotGenerator
 from imager import Imager
 import time
 import argparse
+import re
+
+
+def convert_to_complex(z):
+    z = re.sub(r'[iIJ]', 'j', z)
+    return complex(z)
 
 
 def main():
@@ -22,12 +28,14 @@ def main():
                            dest='c')
 
     parser.add_argument('-z', '--zoom',
-                        help='Degree by which the image is zoomed in. The final zoom is affected by framerate and speed',
-                        type=int,
+                        help='Degree by which the image is zoomed in. '
+                             'The final zoom is affected by framerate and speed',
+                        type=float,
                         default=0)
 
     parser.add_argument('--framerate',
-                        help='Framerate of the image. Use only when generating a video with FFmpeg',
+                        help='Framerate of the image. '
+                             'Use only when generating a video with FFmpeg',
                         type=int,
                         default=-1)
 
@@ -44,7 +52,8 @@ def main():
                         default=1024)
 
     parser.add_argument('-c', '--color',
-                        help='Colorization function. See color_functions.py for more details. Linear is default.',
+                        help='Colorization function. See color_functions.py for more details. '
+                             'Linear is default.',
                         choices=[
                             'linear',
                             'sin',
@@ -53,6 +62,11 @@ def main():
                             'linear-mono'
                         ],
                         default='linear')
+
+    parser.add_argument('-r', '--resolution',
+                        help='Resolution of the image to be generated.',
+                        nargs=2,
+                        default=[1920, 1080])
 
     parser.add_argument('--save',
                         help='Saves the image as NAME',
@@ -67,6 +81,39 @@ def main():
                         action='store_true')
 
     args = parser.parse_args()
+
+    focus = convert_to_complex(args.focus)
+
+    start_time = time.time()
+
+    if args.mandelbrot:
+        generator = MandelbrotGenerator(focus=focus,
+                                        zoom=args.zoom,
+                                        resolution=args.resolution,
+                                        framerate=args.framerate,
+                                        speed=args.speed)
+
+    else:
+        generator = JuliaGenerator(focus=focus,
+                                   zoom=args.zoom,
+                                   resolution=args.resolution,
+                                   framerate=args.framerate,
+                                   speed=args.speed,
+                                   c=convert_to_complex(args.c))
+
+    imager = Imager(generator)
+    image = imager.generate_image(color_type=args.color)
+
+    if args.time:
+        print('{} set generated in {} seconds'.format(
+            'Mandelbrot' if args.mandelbrot else 'Julia',
+            round(time.time() - start_time, 3)))
+
+    if not args.hide:
+        image.show()
+
+    if args.NAME is not None:
+        image.save(args.NAME)
 
 
 if __name__ == '__main__':

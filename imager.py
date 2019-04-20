@@ -37,9 +37,12 @@ class Imager:
             'linear_sin': color_functions.colorize_sinusoidal,
             'mono': color_functions.colorize_mono_squared,
             'linear_mono': color_functions.colorize_mono,
-            'linear': color_functions.linear_colorize
-
+            'linear': color_functions.linear_colorize,
+            'linear_long': None
         }
+
+        if color_type not in _color_function_dict.keys():
+            raise Exception('Not a valid colorization function!')
 
         color_function = _color_function_dict[color_type]
         if color_function is None:
