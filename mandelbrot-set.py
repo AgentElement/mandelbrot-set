@@ -10,7 +10,7 @@ def convert_to_complex(z):
     return complex(z)
 
 
-def main():
+def parse():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-f', '--focus',
@@ -80,8 +80,11 @@ def main():
                         help='Return the required time to compute an image',
                         action='store_true')
 
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def main():
+    args = parse()
     focus = convert_to_complex(args.focus)
 
     start_time = time.time()
