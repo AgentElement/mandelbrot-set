@@ -1,3 +1,5 @@
+#  Copyright (c) 2019 AgentElement
+
 from generator import JuliaGenerator, MandelbrotGenerator
 from imager import Imager
 import time
@@ -52,7 +54,7 @@ def parse():
                         type=int,
                         default=2)
 
-    parser.add_argument('--iterations',
+    parser.add_argument('-i', '--iterations',
                         help='Number of iterations before a complex number is declared to be in the set. '
                              '1024 is default',
                         type=int,
@@ -78,7 +80,8 @@ def parse():
     parser.add_argument('-r', '--resolution',
                         help='Resolution of the image to be generated.',
                         nargs=2,
-                        default=[1920, 1080])
+                        default=[1920, 1080],
+                        type=int)
 
     parser.add_argument('--save',
                         help='Saves the image as NAME',

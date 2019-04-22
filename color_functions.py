@@ -1,7 +1,10 @@
+#  Copyright (c) 2019 AgentElement
+
 import numpy as np
 from PIL import Image
 from numba import jit
 import matplotlib.pyplot as plt
+import colorsys
 
 
 ################################################################################
@@ -11,7 +14,6 @@ import matplotlib.pyplot as plt
 
 @jit
 def colorize_sinusoidal(x, max_iter):
-
     """
     Returns a 3-tuple (red, green, blue) depending on the fraction x/max_iter,
     where x is the number of iterations returned by compute_mandelbrot.
@@ -39,7 +41,6 @@ def colorize_sinusoidal(x, max_iter):
 
 @jit
 def colorize_sinusoidal_squared(x, max_iter, cutoff=1024):
-
     """
     Similar to colorize_sinusoidal, but the sinusoidal functions are squared,
     allowing the function to be extended beyond x / cutoff > 1.
@@ -65,7 +66,6 @@ def colorize_sinusoidal_squared(x, max_iter, cutoff=1024):
 
 @jit
 def colorize_sinusoidal_long(x, max_iter, red_factor=2, green_factor=1, blue_factor=2):
-
     """
     Similar to colorize_sinusoidal, except the sinusoidal functions are halved
     in magnitude and shifted upward to account for negative values. the color
@@ -93,7 +93,6 @@ def colorize_sinusoidal_long(x, max_iter, red_factor=2, green_factor=1, blue_fac
 
 @jit
 def linear_colorize(x, max_iter):
-
     """
     Mimics colorize_sinusoidal() with linear functions. Use this for
     cheaper computation.
@@ -115,8 +114,39 @@ def linear_colorize(x, max_iter):
 
 
 @jit
-def colorize_mono(x, max_iter):
+def three_linear_colorize(x, max_iter):
+    if x == max_iter:
+        return 0, 0, 0
 
+    intensity = x / max_iter
+
+    if 0 <= intensity < (1 / 3):
+        red = 0
+        green = int(768 * intensity)
+        blue = int(256 * (1 - 3 * intensity))
+        return red, green, blue
+
+    elif (1 / 3) <= intensity < (2 / 3):
+        red = int(256 * (3 * intensity - 1))
+        green = int(256 * (2 - 3 * intensity))
+        blue = 0
+        return red, green, blue
+
+    elif (2 / 3) <= intensity < 1:
+        red = int(768 * (1 - intensity))
+        green = 0
+        blue = int(256 * (3 * intensity - 2))
+        return red, green, blue
+
+
+def HSL_colorize(x, max_iter):
+    if x == max_iter:
+        return 0, 0, 0
+    pass
+
+
+@jit
+def colorize_mono(x, max_iter):
     """
     Returns a linear, direct, monochromatic tuple proportional to x / max_iter
     :param x: Current iteration
@@ -133,7 +163,6 @@ def colorize_mono(x, max_iter):
 
 @jit
 def colorize_mono_squared(x, max_iter):
-
     """
     Returns a linear, direct, monochromatic tuple proportional to (x/max_iter)^2\
     Use this for most monochromatic images, humans notice differences in

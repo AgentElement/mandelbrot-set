@@ -1,3 +1,5 @@
+#  Copyright (c) 2019 AgentElement
+
 from PIL import Image
 from generator import Generator
 import color_functions
@@ -25,6 +27,9 @@ class Imager:
         :param kwargs: Passed to the color function
         :return: PIL image
         """
+
+        if kwargs['cutoff'] is None:
+            del kwargs['cutoff']
 
         resolution = self.__generator.resolution
         iterations = self.__generator.iterations

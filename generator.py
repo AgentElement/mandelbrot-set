@@ -1,3 +1,5 @@
+#  Copyright (c) 2019 AgentElement
+
 import numpy as np
 from numba import jit
 
