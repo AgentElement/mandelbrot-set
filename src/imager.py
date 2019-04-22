@@ -1,8 +1,8 @@
 #  Copyright (c) 2019 AgentElement
 
 from PIL import Image
-from generator import Generator
-import color_functions
+from src.generator import Generator
+from src import color_functions
 
 
 class Imager:

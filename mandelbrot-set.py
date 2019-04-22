@@ -1,7 +1,7 @@
 #  Copyright (c) 2019 AgentElement
 
-from generator import JuliaGenerator, MandelbrotGenerator
-from imager import Imager
+from src.generator import JuliaGenerator, MandelbrotGenerator
+from src.imager import Imager
 import time
 import sys
 import argparse
