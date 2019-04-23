@@ -181,6 +181,15 @@ def colorize_mono_squared(x, max_iter):
     return color, color, color
 
 
+color_function_dict = {
+            'sin': colorize_sinusoidal_squared,
+            'linear_sin': colorize_sinusoidal,
+            'mono': colorize_mono_squared,
+            'linear_mono': colorize_mono,
+            'linear': linear_colorize,
+            'linear_long': None
+        }
+
 ################################################################################
 # COLOR SPECTRUM TESTING
 ################################################################################

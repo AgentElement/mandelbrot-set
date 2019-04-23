@@ -2,6 +2,7 @@
 
 from src.generator import JuliaGenerator, MandelbrotGenerator
 from src.imager import Imager
+from src.color_functions import color_function_dict
 import time
 import sys
 import argparse
@@ -63,13 +64,7 @@ def parse():
     parser.add_argument('-c', '--color',
                         help='Colorization function. See color_functions.py for more details. '
                              'Linear is default.',
-                        choices=[
-                            'linear',
-                            'sin',
-                            'linear-sin',
-                            'mono',
-                            'linear-mono'
-                        ],
+                        choices=color_function_dict.keys(),
                         default='linear')
 
     parser.add_argument('--cutoff',

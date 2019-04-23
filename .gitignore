@@ -6,4 +6,4 @@ __pycache__/
 venv/
 .vscode/
 .idea/
-test.py
+tests/test.py

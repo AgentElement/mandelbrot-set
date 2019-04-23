@@ -3,6 +3,7 @@
 from PIL import Image
 from src.generator import Generator
 from src import color_functions
+import sys
 
 
 class Imager:
@@ -37,21 +38,13 @@ class Imager:
         self.__generator.generate()
         image_array = self.__generator.arr
 
-        _color_function_dict = {
-            'sin': color_functions.colorize_sinusoidal_squared,
-            'linear_sin': color_functions.colorize_sinusoidal,
-            'mono': color_functions.colorize_mono_squared,
-            'linear_mono': color_functions.colorize_mono,
-            'linear': color_functions.linear_colorize,
-            'linear_long': None
-        }
-
-        if color_type not in _color_function_dict.keys():
+        if color_type not in color_functions.color_function_dict.keys():
             raise Exception('Not a valid colorization function!')
 
-        color_function = _color_function_dict[color_type]
+        color_function = color_functions.color_function_dict[color_type]
         if color_function is None:
-            raise NotImplementedError
+            print('ERROR: {} has not been implemented yet.'.format(color_type))
+            sys.exit(0)
 
         # -2.0, 1.0, -1.25, 1.25
         for x in range(resolution[1]):
