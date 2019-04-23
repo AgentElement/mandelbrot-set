@@ -82,7 +82,7 @@ enough for almost all purposes.
 
 ## Usage
 
-```
+```bash
 python mandelbrot-set.py [-h] -f FOCUS (-m | -j C) [-z ZOOM]
                          [--framerate FRAMERATE] [--speed SPEED]
                          [--iterations ITERATIONS]
@@ -97,7 +97,7 @@ python mandelbrot-set.py [-h] -f FOCUS (-m | -j C) [-z ZOOM]
 Once you clone the directory, simply execute the following:
 ```bash
 $ cd mandelbrot-set
-$ virtaulenv venv
+$ virtualenv venv
 $ venv/scripts/activate
 $ pip install requirements.txt
 ```
