@@ -139,10 +139,18 @@ def three_linear_colorize(x, max_iter):
         return red, green, blue
 
 
-def HSL_colorize(x, max_iter):
+@jit
+def HSV_colorize(x, max_iter, cutoff=1024):
     if x == max_iter:
         return 0, 0, 0
-    pass
+
+    decimal_rgb = colorsys.hsv_to_rgb(((x % cutoff) / cutoff), 1, 1)
+
+    red = int(decimal_rgb[0] * 255)
+    green = int(decimal_rgb[1] * 255)
+    blue = int(decimal_rgb[2] * 255)
+
+    return red, green, blue
 
 
 @jit
@@ -187,7 +195,8 @@ color_function_dict = {
             'mono': colorize_mono_squared,
             'linear_mono': colorize_mono,
             'linear': linear_colorize,
-            'linear_long': None
+            'linear_long': None,
+            'full': HSV_colorize
         }
 
 ################################################################################
@@ -220,6 +229,6 @@ def plot_color_function(color_function=colorize_sinusoidal, max_iter=1024, scale
 
 
 if __name__ == '__main__':
-    generate_image(color_function=colorize_sinusoidal_squared, scale_factor=1).show()
-    plot_color_function(color_function=colorize_sinusoidal_squared, scale_factor=1)
+    generate_image(color_function=HSV_colorize, scale_factor=1).show()
+    plot_color_function(color_function=HSV_colorize, scale_factor=1)
     plt.show()
