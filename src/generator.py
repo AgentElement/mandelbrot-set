@@ -20,7 +20,6 @@ class Generator:
     @staticmethod
     @jit
     def range_from_resolution(resolution=(3840, 2160), zoom=1, focus=0 + 0j, framerate=-1, speed=2):
-
         """
         Takes a resolution and generates the four bounding numbers used by
         generate_set(). The image will be focused around the focus parameter, and
@@ -64,7 +63,6 @@ class Generator:
 
     @jit
     def complex_from_pixel(self, x_pixel, y_pixel):
-
         """
         returns a complex number corresponding to a pixel of a generated image,
         provided that the zoom and focus of the image correspond to that of the
@@ -87,7 +85,7 @@ class Generator:
 
         return complex(re, im)
 
-    def generate_set(self):
+    def generate_set(self, min_x, max_x, min_y, max_y, iterations):
         pass
 
     def generate(self):
@@ -109,8 +107,8 @@ class MandelbrotGenerator(Generator):
         return self.__repr__()
 
     @staticmethod
-    @jit
-    def compute_mandelbrot(z: complex, max_iter):
+    @jit(nopython=True)
+    def compute_mandelbrot(z: complex, max_iter: int):
 
         """
         Computes if a complex number z is in the set, returning the number of
@@ -184,8 +182,8 @@ class JuliaGenerator(Generator):
             self.resolution, self.framerate, self.speed, self.iterations, self._c)
 
     @staticmethod
-    @jit
-    def compute_julia(z: complex, c: complex, max_iter):
+    @jit(nopython=True)
+    def compute_julia(z: complex, c: complex, max_iter: int):
 
         """
         Computes if a complex number z is in the julia set of c, returning the
