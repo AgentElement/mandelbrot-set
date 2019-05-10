@@ -8,7 +8,7 @@ class Generator:
     def __init__(self, focus=0 + 0j, zoom=1, resolution=(3840, 2160), framerate=24, speed=2, iterations=256):
         self.zoom = zoom
         self._focus = focus
-        self.resolution = resolution
+        self._resolution = resolution
         self.speed = speed
         self.framerate = framerate
         self.iterations = iterations
@@ -71,7 +71,7 @@ class Generator:
         :param y_pixel: The y-value of the pixel to be converted
         :return: Complex
         """
-        max_x_pixel, max_y_pixel = self.resolution[0], self.resolution[1]
+        max_x_pixel, max_y_pixel = self._resolution[0], self._resolution[1]
 
         buffer_zone = 2 * (max_x_pixel - max_y_pixel) / max_y_pixel
 
@@ -101,7 +101,7 @@ class MandelbrotGenerator(Generator):
 
     def __repr__(self):
         return "<mandelbrot_generator res: {}, framerate: {}, speed: {}, iterations: {}>".format(
-            self.resolution, self.framerate, self.speed, self.iterations)
+            self._resolution, self.framerate, self.speed, self.iterations)
 
     def __str__(self):
         return self.__repr__()
@@ -167,7 +167,7 @@ class MandelbrotGenerator(Generator):
     def generate(self):
         self.generate_set(
             *self.range_from_resolution(
-                self.resolution, self.zoom, self._focus, self.framerate, self.speed), self.iterations)
+                self._resolution, self.zoom, self._focus, self.framerate, self.speed), self.iterations)
 
 
 class JuliaGenerator(Generator):
@@ -179,7 +179,7 @@ class JuliaGenerator(Generator):
 
     def __repr__(self):
         return "<julia_generator res: {}, framerate: {}, speed: {}, iterations: {}, c: {}>".format(
-            self.resolution, self.framerate, self.speed, self.iterations, self._c)
+            self._resolution, self.framerate, self.speed, self.iterations, self._c)
 
     @staticmethod
     @jit(nopython=True)
@@ -242,4 +242,4 @@ class JuliaGenerator(Generator):
     def generate(self):
         self.generate_set(
             *self.range_from_resolution(
-                self.resolution, self.zoom, self._focus, self.framerate, self.speed), self.iterations)
+                self._resolution, self.zoom, self._focus, self.framerate, self.speed), self.iterations)

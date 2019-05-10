@@ -32,11 +32,11 @@ class Imager:
         if kwargs['cutoff'] is None:
             del kwargs['cutoff']
 
-        resolution = self.__generator.resolution
+        resolution = self.__generator._resolution
         iterations = self.__generator.iterations
         image = Image.new("RGB", resolution)
         self.__generator.generate()
-        image_array = self.__generator.arr
+        generated_array = self.__generator.arr
 
         if color_type not in color_functions.color_function_dict.keys():
             raise Exception('Not a valid colorization function!')
@@ -49,7 +49,7 @@ class Imager:
         # -2.0, 1.0, -1.25, 1.25
         for x in range(resolution[1]):
             for y in range(resolution[0]):
-                image.putpixel((y, x), color_function(image_array[y][x], iterations, **kwargs))
+                image.putpixel((y, x), color_function(generated_array[y][x], iterations, **kwargs))
 
         return image
 
